@@ -1,0 +1,15 @@
+header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+ul {
+    display: flex;
+    gap:50px;
+}
+
+.container-btns-header {
+    display: flex;
+    gap:10px
+}
