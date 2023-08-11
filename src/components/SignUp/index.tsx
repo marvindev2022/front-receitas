@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { notifyError, notifySucess } from "../../utils/notifications";
@@ -12,23 +12,23 @@ function SignUp() {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [name, setName] = useState<string>("");
+  const inputRef = useRef(null)
 
   async function handleEmailVerification(e: FormEvent): Promise<any> {
     e.preventDefault();
     if (!email) return notifyError("O campo de email é obrigatório.");
 
     try {
-      const { data } = await api.post("/users/validate/email", {
-        email,
+      const { data } = await api.post("users/validate/email", {
+        email
       });
       if (data.emailExists) {
         return notifyError("Email já cadastrado.");
       }
-
-      setStep(2);
+      
     } catch (error: any) {
-      console.log(error);
-      notifyError("Ocorreu um erro ao verificar o email.");
+      error.response.data.message === "Nenhum usuário encontrado" && setStep(2);
+      error.response.data.message !== "Nenhum usuário encontrado" &&notifyError(error.response.data.message);
     }
   }
 
@@ -40,16 +40,15 @@ function SignUp() {
       return notifyError("As senhas não coincidem.");
 
     try {
-      const { data } = await api.post("/users/signup", {
+      const { data } = await api.post("users/signup", {
         name,
         email,
         password,
       });
-      setItem("token", data);
-      navigate("/");
-      notifySucess("Cadastro Realizado com sucesso!");
+      
+      data && notifySucess("Cadastro Realizado com sucesso!");
+       data && document.getElementById('dialog-signup')?.close()
     } catch (error: any) {
-      console.log(error);
       notifyError(error.response);
     }
   }
@@ -111,7 +110,6 @@ function SignUp() {
                 name="email"
                 value={email}
                 placeholder="nome@email.com"
-                required
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>

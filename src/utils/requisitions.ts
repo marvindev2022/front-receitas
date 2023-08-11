@@ -6,7 +6,7 @@ export async function loadCategories() {
   token = getItem("token");
 
   try {
-    const {data} = await api.get("/categories/all", {
+    const {data} = await api.get("categories/all", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -23,10 +23,9 @@ export async function loadCategories() {
 }
 
 export async function loadRecipes() {
-  token = getItem("token");
 
   try {
-    const {data} = await api.get("/recipes/all");
+    const {data} = await api.get("recipes/all");
 
     return data;
   } catch (error: any) {
@@ -37,7 +36,7 @@ export async function loadComments() {
   token = getItem("token");
 
   try {
-    const {data} = await api.get("/recipes/commets", {
+    const {data} = await api.get("recipes/commets", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -52,7 +51,7 @@ export async function loadFavrites() {
   token = getItem("token");
 
   try {
-    const {data} = await api.get("/recipes/favorites", {
+    const {data} = await api.get("recipes/favorites", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

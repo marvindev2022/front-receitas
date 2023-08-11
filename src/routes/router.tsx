@@ -1,8 +1,8 @@
 import React from "react";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import RenderHome from "../pages";
-import RenderRecipes from '../../../sabores-compartilhado/frontend/src/pages/recipes/index';
+import RenderHome from "../pages/main";
+import RenderRecipes from "./../pages/recipes/index";
 
 function MainRoutes(): JSX.Element {
   return (

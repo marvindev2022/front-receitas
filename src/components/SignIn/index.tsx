@@ -1,36 +1,38 @@
 import { FormEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
-import { notifyError, notifySucess } from "../../utils/notifications";
+import { notifyError } from "../../utils/notifications";
 import { setItem } from "../../utils/storage";
 import arrow from "./../../assets/website de receitas/arrow.svg";
 
-function SignIn() {
-  const navigate = useNavigate();
+interface SignInProps {
+  setRender: (value: boolean) => void;
+}
+
+function SignIn({ setRender }: SignInProps): JSX.Element {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  async function handleSubmit(e: FormEvent): Promise<any> {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
-    if (!email || !password)
-      return notifyError("Todos os campos são obrigatórios.");
+    if (!email || !password) {
+      notifyError("Todos os campos são obrigatórios.");
+      return;
+    }
 
     try {
-      const { data } = await api.post("/users/signin", {
+      const { data } = await api.post("users/signin", {
         email,
         password,
       });
       const user = data;
       setItem("token", data.token);
       setItem("user", JSON.stringify({ id: user.id, name: user.name }));
-      navigate("/");
-      notifySucess("Logado");
+      setRender(true);
     } catch (error: any) {
-      console.log(error);
-      notifyError(error.response);
+      notifyError(error.response.data.message);
     }
   }
-  // document.body.classList.add("modal-open");
+
   return (
     <dialog
       id="dialog-signin"
